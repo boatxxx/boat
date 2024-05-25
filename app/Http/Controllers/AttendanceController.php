@@ -55,6 +55,18 @@ class AttendanceController extends Controller
 
         return view('attendance.index', compact('classrooms', 'activities', 'teachers'));
     }
+    public function index3()
+    {
+
+        $classrooms = Classroom::all();
+
+        $activities = Activity::all();
+
+        $teachers = Teacher::all();
+
+
+        return view('report', compact('classrooms', 'activities', 'teachers'));
+    }
     public function index1(Request $request)
     {
         $request->validate([
@@ -74,6 +86,45 @@ class AttendanceController extends Controller
         return view('attendance.index1', compact('classroomId', 'activityId', 'lecturerId', 'students', 'classroom', 'activity', 'lecturer'));
 
     }
+    public function port(Request $request)
+    {
+        $request->validate([
+            'classroom' => 'required|exists:classrooms,id',
+            'activity' => 'required|exists:activities,id',
+            'lecturer' => 'required|exists:teachers,id',
+        ]);
+
+        $classroomId = $request->input('classroom');
+        $activityId = $request->input('activity');
+        $lecturerId = $request->input('lecturer');
+
+        $classroom = Classroom::find($classroomId);
+        $activity = Activity::find($activityId);
+        $lecturer = Teacher::find($lecturerId);
+        $students = Student::where('grade', $classroomId)->get();
+        $attendanceRecords = AttendanceRecord::where('activity_id', $activityId)
+                                              ->where('grade', $classroomId)
+                                              ->get();
+
+// เก็บ student_ids ทั้งหมดไว้ใน array
+$studentIds = $attendanceRecords->pluck('student_id');
+
+// ดึงข้อมูลของนักเรียนจากฐานข้อมูล
+$students = Student::whereIn('id', $studentIds)->get();
+
+// วนลูปเพื่อเพิ่มชื่อและนามสกุลของนักเรียนลงในข้อมูลการเข้าร่วม
+foreach ($attendanceRecords as $record) {
+    $student = $students->where('id', $record->student_id)->first();
+    $record->name = $student->name;
+    $record->last_name = $student->last_name;
+}
+
+            return view('port', compact('classroomId', 'activityId', 'lecturerId', 'students', 'classroom', 'activity', 'lecturer', 'attendanceRecords'));
+
+    }
+
+
+
 
 
 
@@ -106,8 +157,9 @@ class AttendanceController extends Controller
             $attendance = $request->input('attendance' . $index);
             $studentFullName = $name . ' ' . $studentLastNames[$index];
 
-            // สร้างและบันทึกข้อมูลในตาราง AttendanceRecord
-            AttendanceRecord::create([
+            if (empty($request->input('attendance' . $index))) {
+                return view('welcome')->with('error', 'ส่งข้อมูลไม่สำเร็จ กรุณาทำการส่งใหม่และกรอกข้อมูลให้ครบถ้วน');
+            }            AttendanceRecord::create([
                 'activity_id' => $activityId,
                 'student_id' => $studentID[$index],
                 'grade' =>  $classroomId,
@@ -182,7 +234,8 @@ class AttendanceController extends Controller
         ]);
 
 
-        return view('attendance.index', compact('classroomId', 'activityId', 'lecturerId',  'classroom', 'activity', 'lecturer', 'studentLevels','classrooms', 'activities', 'teachers','students'));
+        return view('welcome', compact('classroomId', 'activityId', 'lecturerId',  'classroom', 'activity', 'lecturer', 'studentLevels', 'classrooms', 'activities', 'teachers', 'students'))
+        ->with('success', 'บันทึกข้อมูลสำเร็จแล้ว');
 
     }
     public function store(Request $request)

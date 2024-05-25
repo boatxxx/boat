@@ -273,12 +273,13 @@ td input[type="radio"] {
                     </tbody>
                 </table>
                 <div class="submit-button">
-                    <button type="submit">ส่งข้อมูล</button>
+                    <button type="submit"  onclick="checkAttendance()">ส่งข้อมูล</button>
                 </div>
             </form>
 
         </div>
     </div>
+
 
 </body>
 </html>

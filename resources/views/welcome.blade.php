@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เมนูหลัก</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
         body {
     font-family: Arial, sans-serif;
@@ -153,21 +152,65 @@
         margin: 0 auto; /* จัดกึ่งกลาง */
     }
 }
+/* ใช้ CSS animation เพื่อทำให้ข้อความแจ้งเตือนหายไปที่ความโปร่งแสง */
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.alert-danger {
+    animation: fadeOut 5s forwards;
+}
+.custom-alert {
+    font-size: 24px;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.custom-alert strong {
+    font-size: inherit;
+    color: inherit;
+}
+.custom-alert button {
+    font-size: inherit;
+    color: inherit;
+}
 
         </style>
 </head>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-...." crossorigin="anonymous">
 
 <body>
+
+
+
+
     <div class="container">
         <header class="header">
             <h1>เมนูหลัก</h1>
         </header>
         <nav>
             <ul class="menu">
+
                 <li><a href="{{ route('record') }}"><i class="fas fa-book"></i> ระบบบันทึกข้อมูล</a></li>
                 <li><a href="{{ route('report') }}"><i class="fas fa-chart-bar"></i> ระบบสรุปรายงาน</a></li>
             </ul>
+            @if(isset($error))
+            <div id="error-alert" class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
+                <strong>{{ $error }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        @if(isset($success))
+            <div class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
+                {{ $success }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
 
         </nav>
     </div>

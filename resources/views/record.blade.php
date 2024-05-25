@@ -169,7 +169,7 @@ margin-right: 5px;
                 <li><a href="{{ route('attendance.index', ['level' => 4]) }}"> ปวส 1 </a></li>
 
                 <li><a href="#"> ปวส 2 ปิดปรับปรุง </a></li>
-                <li><a href=""> ลูกเสือ ปิดปรับรุง </a></li>
+                <li><a href="{{ route('attendance.index', ['level' => 6]) }}"> กิจกรรม </a></li>
             </ul>
         </div>
     </div>

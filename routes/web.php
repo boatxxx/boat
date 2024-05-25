@@ -25,8 +25,7 @@ Route::get('/importexcel2', function () {
 
 Route::post('/importExcel555', [AttendanceController::class, 'importExcel2'])->name('import.exce');
 
-Route::get('/report', function () {
-    return view('report');
+Route::get('/report', [AttendanceController::class, 'index3'])->name('report');
 
-})->name('report');
 
+Route::post('/port', [AttendanceController::class, 'port'])->name('port');
